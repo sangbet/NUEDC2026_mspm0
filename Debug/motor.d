@@ -1,6 +1,6 @@
 # FIXED
 
-empty.o: ../empty.c \
+motor.o: ../motor.c ../motor.h \
  ti_msp_dl_config.h \
  D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h \
  D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/DeviceFamily.h \
@@ -83,8 +83,8 @@ empty.o: ../empty.c \
  D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h \
  D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h \
  D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h \
- D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h \
- ../motor.h
+ D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h
+../motor.h:
 ti_msp_dl_config.h:
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/msp.h:
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/DeviceFamily.h:
@@ -168,4 +168,3 @@ D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_vref.h:
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/dl_wwdt.h:
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_interrupt.h:
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/driverlib/m0p/dl_systick.h:
-../motor.h:

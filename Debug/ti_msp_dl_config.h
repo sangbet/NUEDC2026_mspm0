@@ -73,8 +73,67 @@ extern "C" {
 #define POWER_STARTUP_DELAY                                                (16)
 
 
-#define CPUCLK_FREQ                                                     32000000
+#define GPIO_HFXT_PORT                                                     GPIOA
+#define GPIO_HFXIN_PIN                                             DL_GPIO_PIN_5
+#define GPIO_HFXIN_IOMUX                                         (IOMUX_PINCM10)
+#define GPIO_HFXOUT_PIN                                            DL_GPIO_PIN_6
+#define GPIO_HFXOUT_IOMUX                                        (IOMUX_PINCM11)
+#define CPUCLK_FREQ                                                     80000000
+/* Defines for SYSPLL_ERR_01 Workaround */
+/* Represent 1.000 as 1000 */
+#define FLOAT_TO_INT_SCALE                                               (1000U)
+#define FCC_EXPECTED_RATIO                                                  2000
+#define FCC_UPPER_BOUND                       (FCC_EXPECTED_RATIO * (1 + 0.003))
+#define FCC_LOWER_BOUND                       (FCC_EXPECTED_RATIO * (1 - 0.003))
 
+bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
+
+
+/* Defines for PWMB */
+#define PWMB_INST                                                          TIMA0
+#define PWMB_INST_IRQHandler                                    TIMA0_IRQHandler
+#define PWMB_INST_INT_IRQN                                      (TIMA0_INT_IRQn)
+#define PWMB_INST_CLK_FREQ                                              40000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWMB_C0_PORT                                                  GPIOA
+#define GPIO_PWMB_C0_PIN                                           DL_GPIO_PIN_8
+#define GPIO_PWMB_C0_IOMUX                                       (IOMUX_PINCM19)
+#define GPIO_PWMB_C0_IOMUX_FUNC                      IOMUX_PINCM19_PF_TIMA0_CCP0
+#define GPIO_PWMB_C0_IDX                                     DL_TIMER_CC_0_INDEX
+
+/* Defines for PWMA */
+#define PWMA_INST                                                          TIMG8
+#define PWMA_INST_IRQHandler                                    TIMG8_IRQHandler
+#define PWMA_INST_INT_IRQN                                      (TIMG8_INT_IRQn)
+#define PWMA_INST_CLK_FREQ                                              20000000
+/* GPIO defines for channel 1 */
+#define GPIO_PWMA_C1_PORT                                                  GPIOA
+#define GPIO_PWMA_C1_PIN                                           DL_GPIO_PIN_0
+#define GPIO_PWMA_C1_IOMUX                                        (IOMUX_PINCM1)
+#define GPIO_PWMA_C1_IOMUX_FUNC                       IOMUX_PINCM1_PF_TIMG8_CCP1
+#define GPIO_PWMA_C1_IDX                                     DL_TIMER_CC_1_INDEX
+
+
+
+
+/* Port definition for Pin Group MOTOR */
+#define MOTOR_PORT                                                       (GPIOB)
+
+/* Defines for BIN1: GPIOB.16 with pinCMx 33 on package pin 4 */
+#define MOTOR_BIN1_PIN                                          (DL_GPIO_PIN_16)
+#define MOTOR_BIN1_IOMUX                                         (IOMUX_PINCM33)
+/* Defines for BIN2: GPIOB.15 with pinCMx 32 on package pin 3 */
+#define MOTOR_BIN2_PIN                                          (DL_GPIO_PIN_15)
+#define MOTOR_BIN2_IOMUX                                         (IOMUX_PINCM32)
+/* Defines for AIN1: GPIOB.2 with pinCMx 15 on package pin 50 */
+#define MOTOR_AIN1_PIN                                           (DL_GPIO_PIN_2)
+#define MOTOR_AIN1_IOMUX                                         (IOMUX_PINCM15)
+/* Defines for AIN2: GPIOB.12 with pinCMx 29 on package pin 64 */
+#define MOTOR_AIN2_PIN                                          (DL_GPIO_PIN_12)
+#define MOTOR_AIN2_IOMUX                                         (IOMUX_PINCM29)
+/* Defines for STBY: GPIOB.13 with pinCMx 30 on package pin 1 */
+#define MOTOR_STBY_PIN                                          (DL_GPIO_PIN_13)
+#define MOTOR_STBY_IOMUX                                         (IOMUX_PINCM30)
 
 
 /* clang-format on */
@@ -84,6 +143,13 @@ void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 
+bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
+void SYSCFG_DL_PWMB_init(void);
+void SYSCFG_DL_PWMA_init(void);
+
+
+bool SYSCFG_DL_saveConfiguration(void);
+bool SYSCFG_DL_restoreConfiguration(void);
 
 #ifdef __cplusplus
 }

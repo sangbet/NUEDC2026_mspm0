@@ -105,7 +105,7 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define PWMA_INST                                                          TIMG8
 #define PWMA_INST_IRQHandler                                    TIMG8_IRQHandler
 #define PWMA_INST_INT_IRQN                                      (TIMG8_INT_IRQn)
-#define PWMA_INST_CLK_FREQ                                              20000000
+#define PWMA_INST_CLK_FREQ                                              40000000
 /* GPIO defines for channel 1 */
 #define GPIO_PWMA_C1_PORT                                                  GPIOA
 #define GPIO_PWMA_C1_PIN                                           DL_GPIO_PIN_0

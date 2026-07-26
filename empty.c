@@ -31,6 +31,7 @@
  */
 
 #include "ti_msp_dl_config.h"
+
 #include "motor.h"
 
 int main(void)
@@ -38,6 +39,12 @@ int main(void)
     SYSCFG_DL_init();
     MotorInit();
     while (1) {
-        SetSpeed(int32_t speedL, int32_t speedR)
+        // UserDelay(1);
+        SetSpeed(MOTOR_ALL, 1000);
+        UserDelay(1);
+        SetSpeed(MOTOR_R, 500);
+        UserDelay(1);
+        ToggleDir(MOTOR_ALL);
+        UserDelay(1);
     }
 }

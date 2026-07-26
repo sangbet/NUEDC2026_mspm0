@@ -242,14 +242,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 
 
 /*
- * Timer clock configuration to be sourced by  / 1 (80000000 Hz)
+ * Timer clock configuration to be sourced by  / 2 (40000000 Hz)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   40000000 Hz = 80000000 Hz / (1 * (1 + 1))
+ *   40000000 Hz = 40000000 Hz / (2 * (0 + 1))
  */
 static const DL_TimerA_ClockConfig gPWMBClockConfig = {
     .clockSel = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
-    .prescale = 1U
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_2,
+    .prescale = 0U
 };
 
 static const DL_TimerA_PWMConfig gPWMBConfig = {
@@ -288,12 +288,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_PWMB_init(void) {
 /*
  * Timer clock configuration to be sourced by  / 1 (40000000 Hz)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   20000000 Hz = 40000000 Hz / (1 * (1 + 1))
+ *   40000000 Hz = 40000000 Hz / (1 * (0 + 1))
  */
 static const DL_TimerG_ClockConfig gPWMAClockConfig = {
     .clockSel = DL_TIMER_CLOCK_BUSCLK,
     .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
-    .prescale = 1U
+    .prescale = 0U
 };
 
 static const DL_TimerG_PWMConfig gPWMAConfig = {

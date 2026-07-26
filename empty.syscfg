@@ -61,24 +61,19 @@ GPIO1.associatedPins[4].pin.$assign = "PB13";
 
 const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
 
-PWM1.$name                              = "PWMB";
-PWM1.pwmMode                            = "EDGE_ALIGN_UP";
-PWM1.timerStartTimer                    = true;
-PWM1.timerCount                         = 4000;
-PWM1.clockPrescale                      = 2;
-PWM1.ccIndex                            = [0];
-PWM1.PWM_CHANNEL_0.$name                = "ti_driverlib_pwm_PWMTimerCC0";
-PWM1.ccp0PinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric0";
-PWM1.ccp0PinConfig.direction            = scripting.forceWrite("OUTPUT");
-PWM1.ccp0PinConfig.hideOutputInversion  = scripting.forceWrite(false);
-PWM1.ccp0PinConfig.onlyInternalResistor = scripting.forceWrite(false);
-PWM1.ccp0PinConfig.passedPeripheralType = scripting.forceWrite("Digital");
-PWM1.peripheral.$assign                 = "TIMA0";
-PWM1.peripheral.ccp0Pin.$assign         = "PA8";
+PWM1.$name                      = "PWMB";
+PWM1.pwmMode                    = "EDGE_ALIGN_UP";
+PWM1.timerStartTimer            = true;
+PWM1.timerCount                 = 4000;
+PWM1.clockDivider               = 2;
+PWM1.ccIndex                    = [0];
+PWM1.PWM_CHANNEL_0.$name        = "ti_driverlib_pwm_PWMTimerCC0";
+PWM1.ccp0PinConfig.$name        = "ti_driverlib_gpio_GPIOPinGeneric1";
+PWM1.peripheral.$assign         = "TIMA0";
+PWM1.peripheral.ccp0Pin.$assign = "PA8";
 
 PWM2.$name                              = "PWMA";
 PWM2.timerCount                         = 4000;
-PWM2.clockPrescale                      = 2;
 PWM2.pwmMode                            = "EDGE_ALIGN_UP";
 PWM2.ccIndex                            = [1];
 PWM2.timerStartTimer                    = true;

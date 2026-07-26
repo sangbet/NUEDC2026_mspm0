@@ -82,7 +82,7 @@ extern "C" {
 /* Defines for SYSPLL_ERR_01 Workaround */
 /* Represent 1.000 as 1000 */
 #define FLOAT_TO_INT_SCALE                                               (1000U)
-#define FCC_EXPECTED_RATIO                                                  2000
+#define FCC_EXPECTED_RATIO                                                  2500
 #define FCC_UPPER_BOUND                       (FCC_EXPECTED_RATIO * (1 + 0.003))
 #define FCC_LOWER_BOUND                       (FCC_EXPECTED_RATIO * (1 - 0.003))
 
@@ -95,45 +95,51 @@ bool SYSCFG_DL_SYSCTL_SYSPLL_init(void);
 #define PWMB_INST_INT_IRQN                                      (TIMA0_INT_IRQn)
 #define PWMB_INST_CLK_FREQ                                              40000000
 /* GPIO defines for channel 0 */
-#define GPIO_PWMB_C0_PORT                                                  GPIOA
+#define GPIO_PWMB_C0_PORT                                                  GPIOB
 #define GPIO_PWMB_C0_PIN                                           DL_GPIO_PIN_8
-#define GPIO_PWMB_C0_IOMUX                                       (IOMUX_PINCM19)
-#define GPIO_PWMB_C0_IOMUX_FUNC                      IOMUX_PINCM19_PF_TIMA0_CCP0
+#define GPIO_PWMB_C0_IOMUX                                       (IOMUX_PINCM25)
+#define GPIO_PWMB_C0_IOMUX_FUNC                      IOMUX_PINCM25_PF_TIMA0_CCP0
 #define GPIO_PWMB_C0_IDX                                     DL_TIMER_CC_0_INDEX
 
 /* Defines for PWMA */
-#define PWMA_INST                                                          TIMG8
-#define PWMA_INST_IRQHandler                                    TIMG8_IRQHandler
-#define PWMA_INST_INT_IRQN                                      (TIMG8_INT_IRQn)
+#define PWMA_INST                                                          TIMG6
+#define PWMA_INST_IRQHandler                                    TIMG6_IRQHandler
+#define PWMA_INST_INT_IRQN                                      (TIMG6_INT_IRQn)
 #define PWMA_INST_CLK_FREQ                                              40000000
 /* GPIO defines for channel 1 */
-#define GPIO_PWMA_C1_PORT                                                  GPIOA
-#define GPIO_PWMA_C1_PIN                                           DL_GPIO_PIN_0
-#define GPIO_PWMA_C1_IOMUX                                        (IOMUX_PINCM1)
-#define GPIO_PWMA_C1_IOMUX_FUNC                       IOMUX_PINCM1_PF_TIMG8_CCP1
+#define GPIO_PWMA_C1_PORT                                                  GPIOB
+#define GPIO_PWMA_C1_PIN                                           DL_GPIO_PIN_7
+#define GPIO_PWMA_C1_IOMUX                                       (IOMUX_PINCM24)
+#define GPIO_PWMA_C1_IOMUX_FUNC                      IOMUX_PINCM24_PF_TIMG6_CCP1
 #define GPIO_PWMA_C1_IDX                                     DL_TIMER_CC_1_INDEX
 
 
 
 
-/* Port definition for Pin Group MOTOR */
-#define MOTOR_PORT                                                       (GPIOB)
-
-/* Defines for BIN1: GPIOB.16 with pinCMx 33 on package pin 4 */
-#define MOTOR_BIN1_PIN                                          (DL_GPIO_PIN_16)
-#define MOTOR_BIN1_IOMUX                                         (IOMUX_PINCM33)
-/* Defines for BIN2: GPIOB.15 with pinCMx 32 on package pin 3 */
-#define MOTOR_BIN2_PIN                                          (DL_GPIO_PIN_15)
-#define MOTOR_BIN2_IOMUX                                         (IOMUX_PINCM32)
-/* Defines for AIN1: GPIOB.2 with pinCMx 15 on package pin 50 */
-#define MOTOR_AIN1_PIN                                           (DL_GPIO_PIN_2)
-#define MOTOR_AIN1_IOMUX                                         (IOMUX_PINCM15)
-/* Defines for AIN2: GPIOB.12 with pinCMx 29 on package pin 64 */
-#define MOTOR_AIN2_PIN                                          (DL_GPIO_PIN_12)
-#define MOTOR_AIN2_IOMUX                                         (IOMUX_PINCM29)
-/* Defines for STBY: GPIOB.13 with pinCMx 30 on package pin 1 */
-#define MOTOR_STBY_PIN                                          (DL_GPIO_PIN_13)
-#define MOTOR_STBY_IOMUX                                         (IOMUX_PINCM30)
+/* Defines for BIN2: GPIOB.13 with pinCMx 30 on package pin 1 */
+#define MOTOR_BIN2_PORT                                                  (GPIOB)
+#define MOTOR_BIN2_PIN                                          (DL_GPIO_PIN_13)
+#define MOTOR_BIN2_IOMUX                                         (IOMUX_PINCM30)
+/* Defines for BIN1: GPIOA.17 with pinCMx 39 on package pin 10 */
+#define MOTOR_BIN1_PORT                                                  (GPIOA)
+#define MOTOR_BIN1_PIN                                          (DL_GPIO_PIN_17)
+#define MOTOR_BIN1_IOMUX                                         (IOMUX_PINCM39)
+/* Defines for STBY: GPIOB.26 with pinCMx 57 on package pin 28 */
+#define MOTOR_STBY_PORT                                                  (GPIOB)
+#define MOTOR_STBY_PIN                                          (DL_GPIO_PIN_26)
+#define MOTOR_STBY_IOMUX                                         (IOMUX_PINCM57)
+/* Defines for AIN1: GPIOB.9 with pinCMx 26 on package pin 61 */
+#define MOTOR_AIN1_PORT                                                  (GPIOB)
+#define MOTOR_AIN1_PIN                                           (DL_GPIO_PIN_9)
+#define MOTOR_AIN1_IOMUX                                         (IOMUX_PINCM26)
+/* Defines for AIN2: GPIOB.6 with pinCMx 23 on package pin 58 */
+#define MOTOR_AIN2_PORT                                                  (GPIOB)
+#define MOTOR_AIN2_PIN                                           (DL_GPIO_PIN_6)
+#define MOTOR_AIN2_IOMUX                                         (IOMUX_PINCM23)
+/* Defines for LED: GPIOB.22 with pinCMx 50 on package pin 21 */
+#define MOTOR_LED_PORT                                                   (GPIOB)
+#define MOTOR_LED_PIN                                           (DL_GPIO_PIN_22)
+#define MOTOR_LED_IOMUX                                          (IOMUX_PINCM50)
 
 
 /* clang-format on */

@@ -38,6 +38,7 @@ int main(void)
 {
     SYSCFG_DL_init();
     MotorInit();
+    DL_GPIO_setPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
     while (1) {
         SetSpeed(MOTOR_ALL, 1000);
     }

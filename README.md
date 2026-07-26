@@ -36,6 +36,20 @@ SysConfig allows developers to easily configure unused pins by selecting **Board
 For more information about jumper configuration to achieve low-power using the
 MSPM0 LaunchPad, please visit the [LP-MSPM0G3507 User's Guide](https://www.ti.com/lit/slau873).
 
-## Example Usage
-
-Compile, load and run the example.
+## 接线
+### 电机控制
+PWMB-B08
+BIN2-A16
+BIN1-A17
+STBY-B26
+AIN1-B09
+AIN2-B06
+PWMA-B07
+### 循迹模块
+1-B19
+2-B18
+3-B17
+4-A22
+5-B24
+~~6-A25~~
+~~7-A27~~

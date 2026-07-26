@@ -41,6 +41,7 @@
 #include "ti_msp_dl_config.h"
 
 DL_TimerA_backupConfig gPWMBBackup;
+DL_TimerG_backupConfig gPWMABackup;
 
 /*
  *  ======== SYSCFG_DL_init ========
@@ -56,6 +57,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_PWMA_init();
     /* Ensure backup structures have no valid state */
 	gPWMBBackup.backupRdy 	= false;
+	gPWMABackup.backupRdy 	= false;
 
 }
 /*
@@ -67,6 +69,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_saveConfiguration(PWMB_INST, &gPWMBBackup);
+	retStatus &= DL_TimerG_saveConfiguration(PWMA_INST, &gPWMABackup);
 
     return retStatus;
 }
@@ -77,6 +80,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerA_restoreConfiguration(PWMB_INST, &gPWMBBackup, false);
+	retStatus &= DL_TimerG_restoreConfiguration(PWMA_INST, &gPWMABackup, false);
 
     return retStatus;
 }
@@ -106,26 +110,30 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initPeripheralOutputFunction(GPIO_PWMA_C1_IOMUX,GPIO_PWMA_C1_IOMUX_FUNC);
     DL_GPIO_enableOutput(GPIO_PWMA_C1_PORT, GPIO_PWMA_C1_PIN);
 
+    DL_GPIO_initDigitalOutput(MOTOR_BIN2_IOMUX);
+
     DL_GPIO_initDigitalOutput(MOTOR_BIN1_IOMUX);
 
-    DL_GPIO_initDigitalOutput(MOTOR_BIN2_IOMUX);
+    DL_GPIO_initDigitalOutput(MOTOR_STBY_IOMUX);
 
     DL_GPIO_initDigitalOutput(MOTOR_AIN1_IOMUX);
 
     DL_GPIO_initDigitalOutput(MOTOR_AIN2_IOMUX);
 
-    DL_GPIO_initDigitalOutput(MOTOR_STBY_IOMUX);
+    DL_GPIO_initDigitalOutput(MOTOR_LED_IOMUX);
 
-    DL_GPIO_clearPins(MOTOR_PORT, MOTOR_BIN1_PIN |
-		MOTOR_BIN2_PIN |
+    DL_GPIO_clearPins(GPIOA, MOTOR_BIN1_PIN);
+    DL_GPIO_enableOutput(GPIOA, MOTOR_BIN1_PIN);
+    DL_GPIO_clearPins(GPIOB, MOTOR_BIN2_PIN |
+		MOTOR_STBY_PIN |
 		MOTOR_AIN1_PIN |
 		MOTOR_AIN2_PIN |
-		MOTOR_STBY_PIN);
-    DL_GPIO_enableOutput(MOTOR_PORT, MOTOR_BIN1_PIN |
-		MOTOR_BIN2_PIN |
+		MOTOR_LED_PIN);
+    DL_GPIO_enableOutput(GPIOB, MOTOR_BIN2_PIN |
+		MOTOR_STBY_PIN |
 		MOTOR_AIN1_PIN |
 		MOTOR_AIN2_PIN |
-		MOTOR_STBY_PIN);
+		MOTOR_LED_PIN);
 
 }
 
@@ -139,8 +147,8 @@ static const DL_SYSCTL_SYSPLLConfig gSYSPLLConfig = {
 	.enableCLK1             = DL_SYSCTL_SYSPLL_CLK1_DISABLE,
 	.enableCLK0             = DL_SYSCTL_SYSPLL_CLK0_ENABLE,
 	.sysPLLMCLK             = DL_SYSCTL_SYSPLL_MCLK_CLK0,
-	.sysPLLRef              = DL_SYSCTL_SYSPLL_REF_HFCLK,
-	.qDiv                   = 3,
+	.sysPLLRef              = DL_SYSCTL_SYSPLL_REF_SYSOSC,
+	.qDiv                   = 4,
 	.pDiv                   = DL_SYSCTL_SYSPLL_PDIV_1
 };
 
@@ -176,7 +184,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_SYSCTL_SYSPLL_init(void)
     /* Measuring SYSPLL Source */
     DL_SYSCTL_configFCC(DL_SYSCTL_FCC_TRIG_TYPE_RISE_RISE,
                         DL_SYSCTL_FCC_TRIG_SOURCE_LFCLK,
-                        DL_SYSCTL_FCC_CLOCK_SOURCE_HFCLK);
+                        DL_SYSCTL_FCC_CLOCK_SOURCE_SYSOSC);
     /* Get SYSPLL frequency using FCC */
     fccTimeOutCounter = 0;
     DL_SYSCTL_startFCC();
@@ -286,13 +294,13 @@ SYSCONFIG_WEAK void SYSCFG_DL_PWMB_init(void) {
 
 }
 /*
- * Timer clock configuration to be sourced by  / 1 (40000000 Hz)
+ * Timer clock configuration to be sourced by  / 2 (40000000 Hz)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   40000000 Hz = 40000000 Hz / (1 * (0 + 1))
+ *   40000000 Hz = 40000000 Hz / (2 * (0 + 1))
  */
 static const DL_TimerG_ClockConfig gPWMAClockConfig = {
     .clockSel = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_1,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_2,
     .prescale = 0U
 };
 

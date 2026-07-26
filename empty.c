@@ -36,14 +36,8 @@
 int main(void)
 {
     SYSCFG_DL_init();
-    DL_GPIO_setPins(MOTOR_PORT, MOTOR_STBY_PIN);
-    DL_GPIO_setPins(MOTOR_PORT, MOTOR_AIN1_PIN);
-    DL_GPIO_setPins(MOTOR_PORT, MOTOR_BIN1_PIN);
-    DL_GPIO_clearPins(MOTOR_PORT, MOTOR_AIN2_PIN);
-    DL_GPIO_clearPins(MOTOR_PORT, MOTOR_BIN2_PIN);
-    DL_Timer_setCaptureCompareValue(PWMA_INST, 2000, GPIO_PWMA_C1_IDX);
-    DL_Timer_setCaptureCompareValue(PWMB_INST, 2000, GPIO_PWMB_C0_IDX);
-
+    MotorInit();
     while (1) {
+        SetSpeed(int32_t speedL, int32_t speedR)
     }
 }

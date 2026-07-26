@@ -39,12 +39,6 @@ int main(void)
     SYSCFG_DL_init();
     MotorInit();
     while (1) {
-        // UserDelay(1);
         SetSpeed(MOTOR_ALL, 1000);
-        UserDelay(1);
-        SetSpeed(MOTOR_R, 500);
-        UserDelay(1);
-        ToggleDir(MOTOR_ALL);
-        UserDelay(1);
     }
 }

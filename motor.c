@@ -73,6 +73,6 @@ void SetSpeed(uint8_t motorNum, int32_t speed) {
 
     if (motorNum == MOTOR_R || motorNum == MOTOR_ALL) {
         SetDir(MOTOR_R, dir);
-        DL_Timer_setCaptureCompareValue(PWMA_INST, absSpeed, GPIO_PWMB); 
+        DL_Timer_setCaptureCompareValue(PWMB_INST, absSpeed, GPIO_PWMB); 
     }
 }

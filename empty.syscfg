@@ -11,6 +11,7 @@
  */
 const GPIO   = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1  = GPIO.addInstance();
+const GPIO2  = GPIO.addInstance();
 const PWM    = scripting.addModule("/ti/driverlib/PWM", {}, false);
 const PWM1   = PWM.addInstance();
 const PWM2   = PWM.addInstance();
@@ -59,6 +60,24 @@ GPIO1.associatedPins[5].pin.$assign = "PB22";
 
 const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
 
+GPIO2.$name                         = "TRACK";
+GPIO2.associatedPins.create(5);
+GPIO2.associatedPins[0].direction   = "INPUT";
+GPIO2.associatedPins[0].ioStructure = "SD";
+GPIO2.associatedPins[0].$name       = "TRACK0";
+GPIO2.associatedPins[1].direction   = "INPUT";
+GPIO2.associatedPins[1].ioStructure = "SD";
+GPIO2.associatedPins[1].$name       = "TRACK1";
+GPIO2.associatedPins[2].direction   = "INPUT";
+GPIO2.associatedPins[2].ioStructure = "SD";
+GPIO2.associatedPins[2].$name       = "TRACK2";
+GPIO2.associatedPins[3].direction   = "INPUT";
+GPIO2.associatedPins[3].ioStructure = "SD";
+GPIO2.associatedPins[3].$name       = "TRACK3";
+GPIO2.associatedPins[4].direction   = "INPUT";
+GPIO2.associatedPins[4].ioStructure = "SD";
+GPIO2.associatedPins[4].$name       = "TRACK4";
+
 PWM1.$name                              = "PWMB";
 PWM1.pwmMode                            = "EDGE_ALIGN_UP";
 PWM1.timerStartTimer                    = true;
@@ -100,8 +119,13 @@ SYSCTL.clockTreeEn           = true;
 pinFunction4.peripheral.$suggestSolution           = "SYSCTL";
 pinFunction4.peripheral.hfxInPin.$suggestSolution  = "PA5";
 pinFunction4.peripheral.hfxOutPin.$suggestSolution = "PA6";
-GPIO1.associatedPins[0].pin.$suggestSolution       = "PB13";
+GPIO1.associatedPins[0].pin.$suggestSolution       = "PA16";
 GPIO1.associatedPins[1].pin.$suggestSolution       = "PA17";
 Board.peripheral.$suggestSolution                  = "DEBUGSS";
 Board.peripheral.swclkPin.$suggestSolution         = "PA20";
 Board.peripheral.swdioPin.$suggestSolution         = "PA19";
+GPIO2.associatedPins[0].pin.$suggestSolution       = "PA15";
+GPIO2.associatedPins[1].pin.$suggestSolution       = "PB16";
+GPIO2.associatedPins[2].pin.$suggestSolution       = "PB15";
+GPIO2.associatedPins[3].pin.$suggestSolution       = "PB14";
+GPIO2.associatedPins[4].pin.$suggestSolution       = "PB13";

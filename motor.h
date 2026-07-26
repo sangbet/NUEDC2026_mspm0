@@ -41,4 +41,13 @@ void SetDir(uint8_t motorNum,uint8_t dir);
  */
 void SetSpeed(uint8_t motorNum, int32_t speed);
 
+/**
+ *  @brief      差速控制电机
+ *  @param  defaultSpeed 默认速度
+ *  @param  weight 差速权重
+ *  @param  trackDir 循迹模块传入的方向变量
+ *  @note       按照方向在默认速度上加减一定值
+ */
+void DiffSpeed(int32_t defaultSpeed,uint16_t weight,int32_t trackDir);
+
 #endif

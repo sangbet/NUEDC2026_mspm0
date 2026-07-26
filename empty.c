@@ -33,13 +33,20 @@
 #include "ti_msp_dl_config.h"
 
 #include "motor.h"
+#include "track.h"
 
 int main(void)
 {
     SYSCFG_DL_init();
     MotorInit();
     DL_GPIO_setPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
+    uint32_t trackData[5];
+    uint32_t trackDir;
+    SetSpeed(MOTOR_ALL, 0);
+    
     while (1) {
-        SetSpeed(MOTOR_ALL, 1000);
+        ReadTrack(trackData);
+        trackDir = CalTrackDir(trackData);
+        DiffSpeed(0,200,trackDir);
     }
 }

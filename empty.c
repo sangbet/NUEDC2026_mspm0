@@ -41,12 +41,13 @@ int main(void)
     MotorInit();
     DL_GPIO_setPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
     uint32_t trackData[5];
-    uint32_t trackDir;
+    int32_t trackDir;
     SetSpeed(MOTOR_ALL, 0);
     
     while (1) {
         ReadTrack(trackData);
         trackDir = CalTrackDir(trackData);
-        DiffSpeed(0,200,trackDir);
+        DiffSpeed(1000,100,trackDir);
+        delay_cycles(1000);
     }
 }

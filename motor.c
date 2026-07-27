@@ -66,7 +66,7 @@ void SetDir(uint8_t motorNum, uint8_t dir) {
 void SetSpeed(uint8_t motorNum, int32_t speed) {
     uint8_t dir = (speed >= 0) ? FORWARD : BACKWARD;
     int32_t absSpeed = (speed >= 0) ? speed : -speed;
-    if (absSpeed >= 4000){absSpeed = 4000;}
+    if (absSpeed > 4000){absSpeed = 3999;}
     if (motorNum == MOTOR_L || motorNum == MOTOR_ALL) {
         SetDir(MOTOR_L, dir); 
         DL_Timer_setCaptureCompareValue(PWMA_INST, absSpeed, GPIO_PWMA);
@@ -80,5 +80,5 @@ void SetSpeed(uint8_t motorNum, int32_t speed) {
 
 void DiffSpeed(int32_t defaultSpeed,uint16_t weight,int32_t trackDir){
     SetSpeed(MOTOR_L, defaultSpeed + weight*trackDir);
-    SetSpeed(MOTOR_L, defaultSpeed - weight*trackDir);
+    SetSpeed(MOTOR_R, defaultSpeed - weight*trackDir);
 }

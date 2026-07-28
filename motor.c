@@ -1,7 +1,7 @@
 #include "motor.h"
 
 void UserDelay(uint16_t time){
-    delay_cycles(time*CPUCLK_FREQ);
+    delay_cycles(time*CPUCLK_FREQ/1000);
 }
 
 

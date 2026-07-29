@@ -11,6 +11,7 @@ SYSCFG_SRCS += \
 C_SRCS += \
 ./ti_msp_dl_config.c \
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c \
+../key.c \
 ../main.c \
 ../motor.c \
 ../oled.c \
@@ -27,6 +28,7 @@ GEN_FILES += \
 C_DEPS += \
 ./ti_msp_dl_config.d \
 ./startup_mspm0g350x_ticlang.d \
+./key.d \
 ./main.d \
 ./motor.d \
 ./oled.d \
@@ -38,6 +40,7 @@ GEN_OPTS += \
 OBJS += \
 ./ti_msp_dl_config.o \
 ./startup_mspm0g350x_ticlang.o \
+./key.o \
 ./main.o \
 ./motor.o \
 ./oled.o \
@@ -51,6 +54,7 @@ GEN_MISC_FILES += \
 OBJS__QUOTED += \
 "ti_msp_dl_config.o" \
 "startup_mspm0g350x_ticlang.o" \
+"key.o" \
 "main.o" \
 "motor.o" \
 "oled.o" \
@@ -64,6 +68,7 @@ GEN_MISC_FILES__QUOTED += \
 C_DEPS__QUOTED += \
 "ti_msp_dl_config.d" \
 "startup_mspm0g350x_ticlang.d" \
+"key.d" \
 "main.d" \
 "motor.d" \
 "oled.d" \
@@ -80,6 +85,7 @@ SYSCFG_SRCS__QUOTED += \
 C_SRCS__QUOTED += \
 "./ti_msp_dl_config.c" \
 "D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c" \
+"../key.c" \
 "../main.c" \
 "../motor.c" \
 "../oled.c" \

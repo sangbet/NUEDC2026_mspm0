@@ -12,6 +12,7 @@
 const GPIO   = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1  = GPIO.addInstance();
 const GPIO2  = GPIO.addInstance();
+const GPIO3  = GPIO.addInstance();
 const I2C    = scripting.addModule("/ti/driverlib/I2C", {}, false);
 const I2C1   = I2C.addInstance();
 const PWM    = scripting.addModule("/ti/driverlib/PWM", {}, false);
@@ -86,6 +87,15 @@ GPIO2.associatedPins[4].direction   = "INPUT";
 GPIO2.associatedPins[4].ioStructure = "SD";
 GPIO2.associatedPins[4].$name       = "TRACK4";
 GPIO2.associatedPins[4].pin.$assign = "PB24";
+
+GPIO3.$name                              = "KEY";
+GPIO3.associatedPins[0].$name            = "KEY0";
+GPIO3.associatedPins[0].direction        = "INPUT";
+GPIO3.associatedPins[0].ioStructure      = "SD";
+GPIO3.associatedPins[0].interruptEn      = true;
+GPIO3.associatedPins[0].polarity         = "FALL";
+GPIO3.associatedPins[0].internalResistor = "PULL_UP";
+GPIO3.associatedPins[0].pin.$assign      = "PA25";
 
 I2C1.$name                             = "OLED";
 I2C1.basicEnableController             = true;

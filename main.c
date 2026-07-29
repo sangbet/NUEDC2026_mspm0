@@ -34,11 +34,15 @@
 
 #include "motor.h"
 #include "track.h"
+#include "OLED.h"
 
 
 int main(void)
 {
     SYSCFG_DL_init();
+    OLED_Init();
+    OLED_ColorTurn(0);
+    OLED_DisplayTurn(0);
     MotorInit();
 
     DL_GPIO_clearPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
@@ -47,7 +51,8 @@ int main(void)
     SetSpeed(MOTOR_ALL, 0);
     
     while (1) {
-
-        
+        OLED_ShowString(0, 0, (u8*)"HELLO WORLD!", 16);
+        OLED_Refresh();
+        UserDelay(500);
     }
 }

@@ -13,6 +13,7 @@ C_SRCS += \
 D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c \
 ../main.c \
 ../motor.c \
+../oled.c \
 ../track.c 
 
 GEN_CMDS += \
@@ -28,6 +29,7 @@ C_DEPS += \
 ./startup_mspm0g350x_ticlang.d \
 ./main.d \
 ./motor.d \
+./oled.d \
 ./track.d 
 
 GEN_OPTS += \
@@ -38,6 +40,7 @@ OBJS += \
 ./startup_mspm0g350x_ticlang.o \
 ./main.o \
 ./motor.o \
+./oled.o \
 ./track.o 
 
 GEN_MISC_FILES += \
@@ -50,6 +53,7 @@ OBJS__QUOTED += \
 "startup_mspm0g350x_ticlang.o" \
 "main.o" \
 "motor.o" \
+"oled.o" \
 "track.o" 
 
 GEN_MISC_FILES__QUOTED += \
@@ -62,6 +66,7 @@ C_DEPS__QUOTED += \
 "startup_mspm0g350x_ticlang.d" \
 "main.d" \
 "motor.d" \
+"oled.d" \
 "track.d" 
 
 GEN_FILES__QUOTED += \
@@ -77,6 +82,7 @@ C_SRCS__QUOTED += \
 "D:/ti/ccs2100/mspm0_sdk_2_11_00_07/source/ti/devices/msp/m0p/startup_system_files/ticlang/startup_mspm0g350x_ticlang.c" \
 "../main.c" \
 "../motor.c" \
+"../oled.c" \
 "../track.c" 
 
 

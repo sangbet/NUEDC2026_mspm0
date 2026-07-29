@@ -2,6 +2,7 @@
 "./startup_mspm0g350x_ticlang.o"
 "./main.o"
 "./motor.o"
+"./oled.o"
 "./track.o"
 -l"./device_linker.cmd"
 -ldevice.cmd.genlibs

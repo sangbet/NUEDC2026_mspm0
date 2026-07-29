@@ -3,7 +3,6 @@
 "./main.o"
 "./motor.o"
 "./track.o"
-"./uart.o"
 -l"./device_linker.cmd"
 -ldevice.cmd.genlibs
 -llibc.a

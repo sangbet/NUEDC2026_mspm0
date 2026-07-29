@@ -34,16 +34,12 @@
 
 #include "motor.h"
 #include "track.h"
-#include "uart.h"
+
 
 int main(void)
 {
     SYSCFG_DL_init();
     MotorInit();
-    NVIC_EnableIRQ(UART2_INST_INT_IRQN);
-    DL_UART_enableInterrupt(UART2_INST, DL_UART_INTERRUPT_RX);
-
-
 
     DL_GPIO_clearPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
     // uint32_t trackData[5];
@@ -51,20 +47,7 @@ int main(void)
     SetSpeed(MOTOR_ALL, 0);
     
     while (1) {
-        UartProcess();
-        if (g_uartParsed.updated == true) {
-            g_uartParsed.updated = false; // 清除标志
 
-            // 3. 根据解析结果执行具体业务逻辑
-            if (g_uartParsed.cmd == 'S') {
-                // 处理 $S500,200
-                SetSpeed(MOTOR_L, g_uartParsed.param1);
-                SetSpeed(MOTOR_R, g_uartParsed.param2);
-                
-            } else if (g_uartParsed.cmd == 'D') {
-                // 处理 $D1200,200
-                // SetDistance(g_uartParsed.param1, g_uartParsed.param2);
-            }
-        }
+        
     }
 }

@@ -12,6 +12,7 @@ GEN_CMDS__FLAG := -Wl,-l"./device_linker.cmd"
 ORDERED_OBJS += \
 "./ti_msp_dl_config.o" \
 "./startup_mspm0g350x_ticlang.o" \
+"./key.o" \
 "./main.o" \
 "./motor.o" \
 "./oled.o" \
@@ -139,8 +140,8 @@ NUEDC2026_mspm0.out: $(OBJS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "main.o" "motor.o" "oled.o" "track.o" 
-	-$(RM) "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "main.d" "motor.d" "oled.d" "track.d" 
+	-$(RM) "ti_msp_dl_config.o" "startup_mspm0g350x_ticlang.o" "key.o" "main.o" "motor.o" "oled.o" "track.o" 
+	-$(RM) "ti_msp_dl_config.d" "startup_mspm0g350x_ticlang.d" "key.d" "main.d" "motor.d" "oled.d" "track.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents

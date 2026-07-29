@@ -34,25 +34,59 @@
 
 #include "motor.h"
 #include "track.h"
-#include "OLED.h"
+#include "oled.h"
+#include "key.h"
+
+typedef enum {
+    STATE_A = 0,
+    STATE_B,
+    STATE_C,
+    STATE_NUM // 状态总数，用于循环
+} SystemState_t;
+
+// 当前系统状态
+static SystemState_t current_state = STATE_A;
 
 
-int main(void)
-{
+int main(void) {
     SYSCFG_DL_init();
+    
+    // 删掉这行：NVIC_EnableIRQ(KEY_INT_IRQN);
+    Key0_Init();    // 初始化按键（实际为空，但保持接口规范）
+    __enable_irq(); // 全局开中断
+    
     OLED_Init();
     OLED_ColorTurn(0);
     OLED_DisplayTurn(0);
     MotorInit();
-
     DL_GPIO_clearPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
-    // uint32_t trackData[5];
-    // int32_t trackDir;
+
     SetSpeed(MOTOR_ALL, 0);
     
+    // 初始化显示 STATE A
+    OLED_ShowString(0, 0, (u8 *)"STATE A", 16);
+    OLED_Refresh();
+
     while (1) {
-        OLED_ShowString(0, 0, (u8*)"HELLO WORLD!", 16);
-        OLED_Refresh();
-        UserDelay(500);
+        if (Key0_IsPressed()) {
+            current_state++;
+            if (current_state >= STATE_NUM) {
+                current_state = STATE_A;
+            }
+            
+            switch (current_state) {
+                case STATE_A:
+                    OLED_ShowString(0, 0, (u8 *)"STATE A", 16);
+                    break;
+                case STATE_B:
+                    OLED_ShowString(0, 0, (u8 *)"STATE B", 16);
+                    break;
+                case STATE_C:
+                    OLED_ShowString(0, 0, (u8 *)"STATE C", 16);
+                    break;
+                default: break;
+            }
+            OLED_Refresh();
+        }
     }
 }

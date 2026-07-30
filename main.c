@@ -50,7 +50,6 @@ typedef enum {
 static SystemState_t current_state = STATE_A;
 int main(void) {
     SYSCFG_DL_init();
-    // __enable_irq();
     
     OLED_Init();
     OLED_ColorTurn(0);
@@ -58,32 +57,30 @@ int main(void) {
     MotorInit();
     DL_GPIO_clearPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
 
-    SetSpeed(MOTOR_ALL, 0);
+    // SetSpeed(MOTOR_ALL, 0);
     
-    // // 初始化显示 STATE A
-    // OLED_ShowString(0, 0, (u8 *)"STATE A", 16);
-    // OLED_Refresh();
-
     while (1) {
+        Key_Scan();
+
         if (Key0_IsPressed()) {
             current_state++;
             if (current_state >= STATE_NUM) {
                 current_state = STATE_A;
             }
-            
+        
             switch (current_state) {
-                case STATE_A:
-                    OLED_ShowString(0, 0, (u8 *)"STATE A", 16);
-                    break;
-                case STATE_B:
-                    OLED_ShowString(0, 0, (u8 *)"STATE B", 16);
-                    break;
-                case STATE_C:
-                    OLED_ShowString(0, 0, (u8 *)"STATE C", 16);
-                    break;
+                case STATE_A: OLED_ShowString(0, 0, (u8 *)"STATE A", 16); break;
+                case STATE_B: OLED_ShowString(0, 0, (u8 *)"STATE B", 16); break;
+                case STATE_C: OLED_ShowString(0, 0, (u8 *)"STATE C", 16); break;
                 default: break;
+        }
+        OLED_Refresh();
+        }
+
+        if (Key1_IsPressed()) {
+            if (current_state == STATE_A) {
+                DL_GPIO_togglePins(MOTOR_LED_PORT, MOTOR_LED_PIN);
             }
-            OLED_Refresh();
         }
     }
 }

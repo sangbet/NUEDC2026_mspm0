@@ -3,7 +3,10 @@
 
 #include <stdbool.h>
 
-// 检测 KEY0 是否被有效按下一次（包含消抖，读取后自动清除标志）
+
+void Key_Scan(void);
+
 bool Key0_IsPressed(void);
+bool Key1_IsPressed(void);
 
 #endif // KEY_H

@@ -36,6 +36,8 @@
 #include "track.h"
 #include "oled.h"
 #include "key.h"
+#include "oled.h"
+#include "key.h"
 
 typedef enum {
     STATE_A = 0,
@@ -47,6 +49,26 @@ typedef enum {
 // 当前系统状态
 static SystemState_t current_state = STATE_A;
 
+typedef enum {
+    STATE_A = 0,
+    STATE_B,
+    STATE_C,
+    STATE_NUM // 状态总数，用于循环
+} SystemState_t;
+
+// 当前系统状态
+static SystemState_t current_state = STATE_A;
+
+
+typedef enum {
+    STATE_A = 0,
+    STATE_B,
+    STATE_C,
+    STATE_NUM = 3 // 状态总数，用于循环
+} SystemState_t;
+
+// 当前系统状态
+static SystemState_t current_state = STATE_A;
 
 int main(void) {
     SYSCFG_DL_init();

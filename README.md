@@ -56,3 +56,5 @@ PWMA-B07
 ### i2c屏幕
 SCL-B02
 SDA-B03
+### 按键
+KEY0-A09

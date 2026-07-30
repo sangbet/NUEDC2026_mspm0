@@ -167,14 +167,18 @@ MODULE SUMMARY
     D:\ti\ccs2100\ccs\tools\compiler\ti-cgt-armllvm_5.1.1.LTS\lib\armv6m-ti-none-eabi/c/libc.a
        memcpy16.S.obj                 154    0         0      
        copy_decompress_lzss.c.obj     124    0         0      
+       memcpy16.S.obj                 154    0         0      
+       copy_decompress_lzss.c.obj     124    0         0      
        memset16.S.obj                 98     0         0      
        autoinit.c.obj                 60     0         0      
        boot_cortex_m.c.obj            40     0         0      
+       copy_decompress_none.c.obj     18     0         0      
        copy_decompress_none.c.obj     18     0         0      
        copy_zero_init.c.obj           16     0         0      
        exit.c.obj                     6      0         0      
        pre_init.c.obj                 4      0         0      
     +--+------------------------------+------+---------+---------+
+       Total:                         520    0         0      
        Total:                         520    0         0      
                                                               
     D:\ti\ccs2100\ccs\tools\compiler\ti-cgt-armllvm_5.1.1.LTS\lib\armv6m-ti-none-eabi/c/libsysbm.a
@@ -186,8 +190,10 @@ MODULE SUMMARY
        aeabi_uidivmod.S.obj           64     0         0      
        aeabi_memset.S.obj             26     0         0      
        aeabi_memcpy.S.obj             8      0         0      
+       aeabi_memcpy.S.obj             8      0         0      
        aeabi_div0.c.obj               2      0         0      
     +--+------------------------------+------+---------+---------+
+       Total:                         100    0         0      
        Total:                         100    0         0      
                                                               
        Stack:                         0      0         512    

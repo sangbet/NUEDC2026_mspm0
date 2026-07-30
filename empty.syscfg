@@ -92,9 +92,15 @@ GPIO3.$name                              = "KEY";
 GPIO3.associatedPins[0].$name            = "KEY0";
 GPIO3.associatedPins[0].direction        = "INPUT";
 GPIO3.associatedPins[0].ioStructure      = "SD";
+<<<<<<< HEAD
 GPIO3.associatedPins[0].internalResistor = "PULL_UP";
 GPIO3.associatedPins[0].interruptEn      = true;
 GPIO3.associatedPins[0].polarity         = "FALL";
+=======
+GPIO3.associatedPins[0].interruptEn      = true;
+GPIO3.associatedPins[0].polarity         = "FALL";
+GPIO3.associatedPins[0].internalResistor = "PULL_UP";
+>>>>>>> main
 GPIO3.associatedPins[0].pin.$assign      = "PA25";
 
 I2C1.$name                             = "OLED";

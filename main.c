@@ -36,8 +36,6 @@
 #include "track.h"
 #include "oled.h"
 #include "key.h"
-#include "oled.h"
-#include "key.h"
 
 typedef enum {
     STATE_A = 0,
@@ -46,8 +44,12 @@ typedef enum {
     STATE_NUM
 } SystemState_t;
 
+static bool is_running = false;
+uint32_t trackData[8];
+int32_t trackDir;
 
-static SystemState_t current_state = STATE_A;
+
+static SystemState_t current_state = STATE_NUM;
 int main(void) {
     SYSCFG_DL_init();
     
@@ -55,10 +57,12 @@ int main(void) {
     OLED_ColorTurn(0);
     OLED_DisplayTurn(0);
     MotorInit();
-    DL_GPIO_clearPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
+    DL_GPIO_setPins(MOTOR_LED_PORT, MOTOR_LED_PIN);
+
 
     // SetSpeed(MOTOR_ALL, 0);
-    
+    OLED_ShowString(0, 0, (u8 *)"Press Key", 16);
+    OLED_Refresh();
     while (1) {
         Key_Scan();
 
@@ -67,20 +71,61 @@ int main(void) {
             if (current_state >= STATE_NUM) {
                 current_state = STATE_A;
             }
-        
+        OLED_Clear();
             switch (current_state) {
                 case STATE_A: OLED_ShowString(0, 0, (u8 *)"STATE A", 16); break;
                 case STATE_B: OLED_ShowString(0, 0, (u8 *)"STATE B", 16); break;
                 case STATE_C: OLED_ShowString(0, 0, (u8 *)"STATE C", 16); break;
                 default: break;
-        }
+            }
         OLED_Refresh();
         }
 
         if (Key1_IsPressed()) {
-            if (current_state == STATE_A) {
-                DL_GPIO_togglePins(MOTOR_LED_PORT, MOTOR_LED_PIN);
-            }
+            // if (current_state == STATE_A) {
+            //     DL_GPIO_togglePins(MOTOR_LED_PORT, MOTOR_LED_PIN);
+            //     is_running = !is_running;
+            // }
+            DL_GPIO_togglePins(MOTOR_LED_PORT, MOTOR_LED_PIN);
+            is_running = !is_running;
         }
+
+        
+        switch (current_state) {
+            case STATE_A:
+                if (is_running) {
+                    ReadTrack(trackData);
+                    trackDir = CalTrackDir(trackData);
+                    DiffSpeed(1300, 120, trackDir);
+                    if (trackDir > 15) {
+                        is_running = !is_running;
+                        StopMotor(MOTOR_ALL);
+                    }
+                } else {
+                    StopMotor(MOTOR_ALL);
+                }
+                break;
+
+            case STATE_B:
+                if (is_running) {
+                    ReadTrack(trackData);
+                    trackDir = CalTrackDir(trackData);
+                    DiffSpeed(1500, 100, trackDir);
+                } else {
+                    StopMotor(MOTOR_ALL);
+                }
+                break;
+
+            case STATE_C:
+                // 状态 C 强制停车
+                StopMotor(MOTOR_ALL);
+                break;
+
+            default:
+                // 异常状态保护，强制停车
+                StopMotor(MOTOR_ALL);
+                break;
+        }
+
     }
 }

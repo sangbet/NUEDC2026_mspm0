@@ -17,14 +17,14 @@ typedef struct {
 } Key_t;
 
 static Key_t keys[2] = {
-    {DL_GPIO_PIN_25, KEY_STATE_RELEASE, 0, false},
-    {DL_GPIO_PIN_24, KEY_STATE_RELEASE, 0, false}
+    {DL_GPIO_PIN_14, KEY_STATE_RELEASE, 0, false},
+    {DL_GPIO_PIN_11, KEY_STATE_RELEASE, 0, false}
 };
 
 
 void Key_Scan(void) {
     for (int i = 0; i < 2; i++) {
-        bool is_down = ((DL_GPIO_readPins(GPIOA, keys[i].pin_mask) & keys[i].pin_mask) == 0);
+        bool is_down = ((DL_GPIO_readPins(GPIOB, keys[i].pin_mask) & keys[i].pin_mask) == 0);
 
         switch (keys[i].state) {
             case KEY_STATE_RELEASE:

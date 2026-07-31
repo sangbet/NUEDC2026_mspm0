@@ -79,7 +79,7 @@ int main(void) {
     uint32_t end_time = 0;
     bool prev_running = false;
 
-    Track_PID_Init(120.0f, 1.0f, 20.0f, 1000.0f);
+    Track_PID_Init(50.0f, 0.0f, 0.0f, 800.0f);
     // 用于记录上一次显示的秒数，只有秒数变化才刷新
     uint32_t last_display_sec = 0xFFFFFFFF; 
     char time_buf[20];
@@ -146,8 +146,9 @@ int main(void) {
                 case STATE_A:
                     if (is_running) {
                         ReadTrack(trackData);
-                        trackDir = CalTrackDir(trackData);
-                        Track_Process(1500, trackDir);
+                        Track_Process(1500, trackData);
+                        // trackDir = CalTrackDir(trackData);
+                        // Track_Process(1500, trackDir);
                     
                     } else {
                         StopMotor(MOTOR_ALL);
@@ -157,8 +158,9 @@ int main(void) {
                 case STATE_B:
                     if (is_running) {
                         ReadTrack(trackData);
-                        trackDir = CalTrackDir(trackData);
-                        Track_Process(1300, trackDir);
+                        // trackDir = CalTrackDir(trackData);
+                        // Track_Process(1300, trackDir);
+                        Track_Process(1500, trackData);
                     } else {
                         StopMotor(MOTOR_ALL);
                     }

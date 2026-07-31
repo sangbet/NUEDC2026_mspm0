@@ -72,18 +72,73 @@ static float PID_Calculate(float error) {
     return output;
 }
 
-// 循迹处理：读取偏差 -> PID计算 -> 驱动电机
-void Track_Process(int32_t baseSpeed, int32_t trackDir) {
-    // 1. 将 trackDir 作为误差传入 PID 
-    // 注意：如果加上 PID 后小车剧烈偏离赛道，请在此处给 trackDir 加负号：-trackDir
-    float turn_output = PID_Calculate((float)trackDir);
+// void Track_Process(int32_t baseSpeed, int32_t trackDir) {
+//     // 1. 将 trackDir 作为误差传入 PID 
+//     // 注意：如果加上 PID 后小车剧烈偏离赛道，请在此处给 trackDir 加负号：-trackDir
+//     float turn_output = PID_Calculate((float)trackDir);
     
-    // 2. 将 PID 输出转化为左右轮速度 (直接调用底层 SetSpeed)
-    // 左轮加速则右轮减速，实现差速转向
-    int32_t left_speed  = baseSpeed + (int32_t)turn_output;
-    int32_t right_speed = baseSpeed - (int32_t)turn_output;
+//     // 2. 将 PID 输出转化为左右轮速度 (直接调用底层 SetSpeed)
+//     // 左轮加速则右轮减速，实现差速转向
+//     int32_t left_speed  = baseSpeed + (int32_t)turn_output;
+//     int32_t right_speed = baseSpeed - (int32_t)turn_output;
     
-    // 3. 驱动电机 (SetSpeed 内部已做 4000 限幅和方向处理)
-    SetSpeed(MOTOR_L, left_speed);
-    SetSpeed(MOTOR_R, right_speed);
+//     // 3. 驱动电机 (SetSpeed 内部已做 4000 限幅和方向处理)
+//     SetSpeed(MOTOR_L, left_speed);
+//     SetSpeed(MOTOR_R, right_speed);
+// }
+void Track_Process(int32_t baseSpeed, uint32_t *trackData) {
+    // 静态变量，用于记录上一次有效的偏差方向
+    // 这样在丢线的瞬间，能“记住”刚才应该往哪边转
+    static int32_t last_valid_error = 0; 
+    
+    int32_t trackWeight[8] = {-10,-6,-4,-2,2,4,6,10};
+    int32_t trackDir = 0;
+    uint8_t sensor_count = 0; // 用于统计检测到线的传感器数量
+    
+    // 1. 遍历计算偏差值并统计有效传感器数量
+    for(uint8_t i = 0; i < 8; i++) {
+        if(trackData[i] == 1) { // 假设 1 代表检测到黑线
+            trackDir += trackWeight[i];
+            sensor_count++;
+        }
+    }
+
+    // 2. 防丢线逻辑核心
+    if (sensor_count == 0) {
+        // --- 丢线状态 ---
+        // 所有传感器都未检测到黑线，此时 PID 计算出的 trackDir 为 0
+        // 如果不处理，小车会误以为在正中间而直行，导致彻底冲出赛道
+        
+        if (last_valid_error < 0) {
+            // 最后一次偏差为负，说明线在左边，车偏右了 -> 原地左转找线
+            // 这里使用差速转向，甚至可以反转电机以获得更小的转弯半径
+            SetSpeed(MOTOR_L, -500); // 左轮反转或停止
+            SetSpeed(MOTOR_R, baseSpeed); // 右轮正转
+        } 
+        else if (last_valid_error > 0) {
+            // 最后一次偏差为正，说明线在右边，车偏左了 -> 原地右转找线
+            SetSpeed(MOTOR_L, baseSpeed); // 左轮正转
+            SetSpeed(MOTOR_R, -500); // 右轮反转或停止
+        } 
+        else {
+            // 特殊情况：刚启动就是全白，或恰好在正中间丢线
+            // 默认直行或缓慢旋转，等待找到线
+            SetSpeed(MOTOR_L, baseSpeed);
+            SetSpeed(MOTOR_R, baseSpeed);
+        }
+    } 
+    else {
+        // --- 正常循迹状态 ---
+        // 更新记忆的偏差方向（只有正常循迹时才更新，防止丢线时记录被清零）
+        last_valid_error = trackDir;
+
+        // 正常 PID 计算
+        float turn_output = PID_Calculate((float)trackDir);
+        
+        int32_t left_speed  = baseSpeed + (int32_t)turn_output;
+        int32_t right_speed = baseSpeed - (int32_t)turn_output;
+        
+        SetSpeed(MOTOR_L, left_speed);
+        SetSpeed(MOTOR_R, right_speed);
+    }
 }

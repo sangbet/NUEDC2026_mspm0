@@ -1,5 +1,8 @@
 #include "motor.h"
 
+uint32_t encA = 0;
+uint32_t encB = 0;
+
 void UserDelay(uint16_t time){
     delay_cycles(time*CPUCLK_FREQ/1000);
 }
@@ -81,4 +84,12 @@ void SetSpeed(uint8_t motorNum, int32_t speed) {
 void DiffSpeed(int32_t defaultSpeed,uint16_t weight,int32_t trackDir){
     SetSpeed(MOTOR_L, defaultSpeed + weight*trackDir);
     SetSpeed(MOTOR_R, defaultSpeed - weight*trackDir);
+}
+
+void GROUP1_IRQHandler(){
+    if(DL_GPIO_getPendingInterrupt(GPIOB) == MOTOR_E2A_IIDX){
+        encA++;
+    }else if(DL_GPIO_getPendingInterrupt(GPIOB) == MOTOR_E1B_IIDX){
+        encB++;
+    }
 }

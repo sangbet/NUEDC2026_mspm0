@@ -11,7 +11,12 @@
 #define FORWARD 1
 #define BACKWARD 2
 
+#define ENCLINE 13
+
 #include "ti_msp_dl_config.h"
+
+extern uint32_t encA;
+extern uint32_t encB;
 
 void UserDelay(uint16_t time);
 

@@ -37,6 +37,8 @@
 #include "oled.h"
 #include "key.h"
 
+// #define 
+
 typedef enum {
     STATE_A = 0,
     STATE_B,
@@ -51,6 +53,11 @@ int32_t trackDir;
 // 定时器相关配置
 volatile uint32_t g_ulSystemTicks = 0;
 volatile uint8_t pid_control_flag = 0; 
+
+// // 声明引用 motor.c 中的编码器计数变量
+// extern uint32_t encA;
+// extern uint32_t encB;
+
 
 void SysTick_Handler(void) {
     g_ulSystemTicks++;
@@ -68,6 +75,7 @@ static SystemState_t current_state = STATE_C;
 int main(void) {
     SYSCFG_DL_init();
     SysTick_Config(CPUCLK_FREQ / 1000);
+    NVIC_EnableIRQ(MOTOR_INT_IRQN);
     
     OLED_Init();
     OLED_ColorTurn(0);
@@ -78,8 +86,10 @@ int main(void) {
     uint32_t start_time = 0;
     uint32_t end_time = 0;
     bool prev_running = false;
+    float rounds;
 
-    Track_PID_Init(50.0f, 0.0f, 0.0f, 800.0f);
+    // Track_PID_Init(50.0f, 0.0f, 3.0f, 800.0f);
+    Track_PID_Init(50.0f, 0.0f, 2.8f, 800.0f);
     // 用于记录上一次显示的秒数，只有秒数变化才刷新
     uint32_t last_display_sec = 0xFFFFFFFF; 
     char time_buf[20];
@@ -116,12 +126,18 @@ int main(void) {
         if (Key1_IsPressed()) {
             DL_GPIO_togglePins(MOTOR_LED_PORT, MOTOR_LED_PIN);
             is_running = !is_running;
+            if (is_running) {
+                encA = 0;
+                encB = 0;
+            }
         }
 
         // 计时逻辑
         if (is_running) {
             if (!prev_running) {
                 start_time = g_ulSystemTicks;
+                encA = 0;
+                encB = 0;
             }
             end_time = g_ulSystemTicks; 
         }
@@ -134,7 +150,12 @@ int main(void) {
         if (sec != last_display_sec) {
             last_display_sec = sec;
             sprintf(time_buf, "Time: %us", (unsigned int)sec);
+            uint32_t avg_pulses = (encA + encB) / 2;
+            rounds = (float)avg_pulses / ENCLINE;
+            char dist_buf[30]; 
+            sprintf(dist_buf, "Rounds: %.2f", rounds);
             OLED_ShowString(0, 16, (u8 *)time_buf, 16);
+            OLED_ShowString(0, 32, (u8 *)dist_buf, 16);
             OLED_Refresh(); 
         }
 
@@ -147,6 +168,9 @@ int main(void) {
                     if (is_running) {
                         ReadTrack(trackData);
                         Track_Process(1500, trackData);
+                        if(rounds>420){
+                            is_running = !is_running;
+                        }
                         // trackDir = CalTrackDir(trackData);
                         // Track_Process(1500, trackDir);
                     
@@ -161,6 +185,9 @@ int main(void) {
                         // trackDir = CalTrackDir(trackData);
                         // Track_Process(1300, trackDir);
                         Track_Process(1500, trackData);
+                        if(rounds>120){
+                            is_running = !is_running;
+                        }
                     } else {
                         StopMotor(MOTOR_ALL);
                     }

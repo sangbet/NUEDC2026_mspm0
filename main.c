@@ -48,18 +48,25 @@ static bool is_running = false;
 uint32_t trackData[8];
 int32_t trackDir;
 
-// 系统滴答定时器变量
+// 定时器相关配置
 volatile uint32_t g_ulSystemTicks = 0;
+volatile uint8_t pid_control_flag = 0; 
+
 void SysTick_Handler(void) {
-    g_ulSystemTicks++; // 1ms 中断一次
+    g_ulSystemTicks++;
+    static uint16_t tick_10ms = 0;
+    tick_10ms++;
+    if (tick_10ms >= 10) {
+        tick_10ms = 0;
+        pid_control_flag = 1;
+    }
 }
 
-// 【修改点1】初始状态设为 STATE_A，确保上电后处于有效状态
-static SystemState_t current_state = STATE_A; 
+
+static SystemState_t current_state = STATE_C; 
 
 int main(void) {
     SYSCFG_DL_init();
-    // 初始化 SysTick，开启1ms定时中断
     SysTick_Config(CPUCLK_FREQ / 1000);
     
     OLED_Init();
@@ -71,7 +78,8 @@ int main(void) {
     uint32_t start_time = 0;
     uint32_t end_time = 0;
     bool prev_running = false;
-    
+
+    Track_PID_Init(120.0f, 1.0f, 20.0f, 1000.0f);
     // 用于记录上一次显示的秒数，只有秒数变化才刷新
     uint32_t last_display_sec = 0xFFFFFFFF; 
     char time_buf[20];
@@ -99,6 +107,7 @@ int main(void) {
             }
             OLED_ShowString(0, 16, (u8 *)time_buf, 16);
             OLED_Refresh();
+            is_running = false;
             // 切换界面时重置秒数记录，防止切换后秒数不变导致不刷新
             last_display_sec = 0xFFFFFFFF; 
         }
@@ -112,56 +121,57 @@ int main(void) {
         // 计时逻辑
         if (is_running) {
             if (!prev_running) {
-                start_time = g_ulSystemTicks; // 刚启动，记录起始时间
+                start_time = g_ulSystemTicks;
             }
-            end_time = g_ulSystemTicks; // 持续更新结束时间
+            end_time = g_ulSystemTicks; 
         }
         prev_running = is_running;
 
-        // 【修改点2】显示逻辑优化：每秒刷新一次，只显示整数秒
+
         uint32_t display_ms = end_time - start_time;
         uint32_t sec = display_ms / 1000; // 只取整数秒
 
         if (sec != last_display_sec) {
             last_display_sec = sec;
-            sprintf(time_buf, "Time: %us", (unsigned int)sec); // 格式化为整数
+            sprintf(time_buf, "Time: %us", (unsigned int)sec);
             OLED_ShowString(0, 16, (u8 *)time_buf, 16);
-            OLED_Refresh(); // 每秒只刷新一次，大大降低CPU占用
+            OLED_Refresh(); 
         }
 
         // 电机控制逻辑
-        switch (current_state) {
-            case STATE_A:
-                if (is_running) {
-                    ReadTrack(trackData);
-                    trackDir = CalTrackDir(trackData);
-                    DiffSpeed(1300, 120, trackDir);
-                    if (trackDir > 15) {
-                        is_running = false; // 建议改为 false，逻辑更严谨
+         if (pid_control_flag) {
+            pid_control_flag = 0;
+
+            switch (current_state) {
+                case STATE_A:
+                    if (is_running) {
+                        ReadTrack(trackData);
+                        trackDir = CalTrackDir(trackData);
+                        Track_Process(1500, trackDir);
+                    
+                    } else {
                         StopMotor(MOTOR_ALL);
                     }
-                } else {
+                    break;
+
+                case STATE_B:
+                    if (is_running) {
+                        ReadTrack(trackData);
+                        trackDir = CalTrackDir(trackData);
+                        Track_Process(1300, trackDir);
+                    } else {
+                        StopMotor(MOTOR_ALL);
+                    }
+                    break;
+
+                case STATE_C:
                     StopMotor(MOTOR_ALL);
-                }
-                break;
+                    break;
 
-            case STATE_B:
-                if (is_running) {
-                    ReadTrack(trackData);
-                    trackDir = CalTrackDir(trackData);
-                    DiffSpeed(1300, 120, trackDir);
-                } else {
+                default:
                     StopMotor(MOTOR_ALL);
-                }
-                break;
-
-            case STATE_C:
-                StopMotor(MOTOR_ALL);
-                break;
-
-            default:
-                StopMotor(MOTOR_ALL);
-                break;
+                    break;
+            }
         }
     }
 }

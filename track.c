@@ -15,7 +15,19 @@ static PID_TypeDef track_pid;
 
 
 
+// void ReadTrack(uint32_t *trackData){
+//     trackData[0] = !(DL_GPIO_readPins(TRACK_TRACK0_PORT, TRACK_TRACK0_PIN) & TRACK_TRACK0_PIN);
+//     trackData[1] = !(DL_GPIO_readPins(TRACK_TRACK1_PORT, TRACK_TRACK1_PIN) & TRACK_TRACK1_PIN);
+//     trackData[2] = !(DL_GPIO_readPins(TRACK_TRACK2_PORT, TRACK_TRACK2_PIN) & TRACK_TRACK2_PIN);
+//     trackData[3] = !(DL_GPIO_readPins(TRACK_TRACK3_PORT, TRACK_TRACK3_PIN) & TRACK_TRACK3_PIN);
+//     trackData[4] = !(DL_GPIO_readPins(TRACK_TRACK4_PORT, TRACK_TRACK4_PIN) & TRACK_TRACK4_PIN);
+//     trackData[5] = !(DL_GPIO_readPins(TRACK_TRACK5_PORT, TRACK_TRACK5_PIN) & TRACK_TRACK5_PIN);
+//     trackData[6] = !(DL_GPIO_readPins(TRACK_TRACK6_PORT, TRACK_TRACK6_PIN) & TRACK_TRACK6_PIN);
+//     trackData[7] = !(DL_GPIO_readPins(TRACK_TRACK7_PORT, TRACK_TRACK7_PIN) & TRACK_TRACK7_PIN);
+// }
+
 void ReadTrack(uint32_t *trackData){
+    // 1. 读取原始传感器数据
     trackData[0] = !(DL_GPIO_readPins(TRACK_TRACK0_PORT, TRACK_TRACK0_PIN) & TRACK_TRACK0_PIN);
     trackData[1] = !(DL_GPIO_readPins(TRACK_TRACK1_PORT, TRACK_TRACK1_PIN) & TRACK_TRACK1_PIN);
     trackData[2] = !(DL_GPIO_readPins(TRACK_TRACK2_PORT, TRACK_TRACK2_PIN) & TRACK_TRACK2_PIN);
@@ -24,7 +36,35 @@ void ReadTrack(uint32_t *trackData){
     trackData[5] = !(DL_GPIO_readPins(TRACK_TRACK5_PORT, TRACK_TRACK5_PIN) & TRACK_TRACK5_PIN);
     trackData[6] = !(DL_GPIO_readPins(TRACK_TRACK6_PORT, TRACK_TRACK6_PIN) & TRACK_TRACK6_PIN);
     trackData[7] = !(DL_GPIO_readPins(TRACK_TRACK7_PORT, TRACK_TRACK7_PIN) & TRACK_TRACK7_PIN);
+
+    // 2. 数据分析：寻找首尾位置和黑点总数
+    uint8_t sum = 0;           // 黑点总数
+    int8_t first = -1;         // 第一个黑点索引
+    int8_t last = -1;          // 最后一个黑点索引
+    
+    for(uint8_t i = 0; i < 8; i++){
+        if(trackData[i] == 1){
+            sum++;
+            if(first == -1) first = i; // 记录第一个黑点位置
+            last = i;                  // 持续更新最后一个黑点位置
+        }
+    }
+
+    // 3. 干扰过滤逻辑
+    // 如果有检测到黑线，且 首尾宽度 > 黑点总数，说明中间有断开，是不连续干扰
+    if(sum > 0 && (last - first + 1) > sum) {
+        // 判断左侧边缘是否孤立（左边是黑线，紧邻右边是白线）
+        if(trackData[first] == 1 && trackData[first + 1] == 0) {
+            trackData[first] = 0; // 过滤左侧干扰
+        }
+        
+        // 判断右侧边缘是否孤立（右边是黑线，紧邻左边是白线）
+        if(trackData[last] == 1 && trackData[last - 1] == 0) {
+            trackData[last] = 0; // 过滤右侧干扰
+        }
+    }
 }
+
 
 int32_t CalTrackDir(uint32_t *trackData){
     int32_t trackWeight[8] = {-8,-6,-4,-2,2,4,6,8};

@@ -43,6 +43,7 @@ typedef enum {
     STATE_A = 0,
     STATE_B,
     STATE_C,
+    STATE_D,
     STATE_NUM
 } SystemState_t;
 
@@ -70,7 +71,7 @@ void SysTick_Handler(void) {
 }
 
 
-static SystemState_t current_state = STATE_C; 
+static SystemState_t current_state = STATE_D; 
 
 int main(void) {
     SYSCFG_DL_init();
@@ -87,16 +88,17 @@ int main(void) {
     uint32_t end_time = 0;
     bool prev_running = false;
     float rounds;
+    uint8_t sum=0;
 
     // Track_PID_Init(50.0f, 0.0f, 3.0f, 800.0f);
-    Track_PID_Init(50.0f, 0.0f, 2.8f, 800.0f);
+    Track_PID_Init(50.0f, 0.1f, 4.0f, 800.0f);
     // 用于记录上一次显示的秒数，只有秒数变化才刷新
     uint32_t last_display_sec = 0xFFFFFFFF; 
     char time_buf[20];
 
-    OLED_ShowString(0, 0, (u8 *)"Press Key", 16);
-    sprintf(time_buf, "Time: 0s");
-    OLED_ShowString(0, 16, (u8 *)time_buf, 16);
+    OLED_ShowString(0, 0, (u8 *)"STOP", 16);
+    // sprintf(time_buf, "Time: 0s");
+    // OLED_ShowString(0, 16, (u8 *)time_buf, 16);
     OLED_Refresh();
 
     while (1) {
@@ -110,9 +112,10 @@ int main(void) {
             }
             OLED_Clear();
             switch (current_state) {
-                case STATE_A: OLED_ShowString(0, 0, (u8 *)"STATE A", 16); break;
-                case STATE_B: OLED_ShowString(0, 0, (u8 *)"STATE B", 16); break;
-                case STATE_C: OLED_ShowString(0, 0, (u8 *)"STATE C", 16); break;
+                case STATE_A: OLED_ShowString(0, 0, (u8 *)"Full Fast", 16); break;
+                case STATE_B: OLED_ShowString(0, 0, (u8 *)"Half", 16); break;
+                case STATE_C: OLED_ShowString(0, 0, (u8 *)"Full Slow", 16); break;
+                case STATE_D: OLED_ShowString(0, 0, (u8 *)"STOP", 16); break;
                 default: break;
             }
             OLED_ShowString(0, 16, (u8 *)time_buf, 16);
@@ -166,14 +169,25 @@ int main(void) {
             switch (current_state) {
                 case STATE_A:
                     if (is_running) {
+                        sum = 0;
                         ReadTrack(trackData);
-                        Track_Process(1500, trackData);
-                        if(rounds>420){
-                            is_running = !is_running;
+                        for(uint8_t i=0;i<8;i++){
+                            sum = sum + trackData[i];
                         }
-                        // trackDir = CalTrackDir(trackData);
-                        // Track_Process(1500, trackDir);
-                    
+                        if(rounds>380){
+                            if(rounds>405){
+                                Track_Process(800, trackData);
+                            }else{
+                                Track_Process(1000, trackData);
+                            }
+                            if(sum>=4){
+                                is_running = !is_running;
+                                StopMotor(MOTOR_ALL);
+                            }
+                        }else{
+                            Track_Process(1500, trackData);
+                        }
+                        
                     } else {
                         StopMotor(MOTOR_ALL);
                     }
@@ -182,11 +196,14 @@ int main(void) {
                 case STATE_B:
                     if (is_running) {
                         ReadTrack(trackData);
-                        // trackDir = CalTrackDir(trackData);
-                        // Track_Process(1300, trackDir);
-                        Track_Process(1500, trackData);
+                        if(rounds<20){
+                            Track_Process(1000, trackData);
+                        }else{
+                            Track_Process(1200, trackData);
+                        }
                         if(rounds>120){
                             is_running = !is_running;
+                            StopMotor(MOTOR_ALL);
                         }
                     } else {
                         StopMotor(MOTOR_ALL);
@@ -194,9 +211,18 @@ int main(void) {
                     break;
 
                 case STATE_C:
-                    StopMotor(MOTOR_ALL);
+                    if(is_running){
+                        ReadTrack(trackData);
+                        Track_Process(1000, trackData);
+                    }else{
+                        StopMotor(MOTOR_ALL);
+                    }
                     break;
 
+                case STATE_D:
+                    StopMotor(MOTOR_ALL);
+                    break;
+                    
                 default:
                     StopMotor(MOTOR_ALL);
                     break;
